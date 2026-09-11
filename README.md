@@ -1,1 +1,0 @@
-# SW2627-Nextjs-digiVault-2
