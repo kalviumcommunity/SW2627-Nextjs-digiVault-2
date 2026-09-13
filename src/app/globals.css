@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f7fb;
+  --foreground: #0f172a;
+  --brand: #2563eb;
+  --brand-dark: #1d4ed8;
+  --brand-light: #eaf1fe;
+  --navy: #16375c;
+  --navy-dark: #0f2843;
+
+  /* DigiLocker-style purple/lavender tokens (login page) */
+  --dl-bg: #edeaf8;
+  --dl-purple: #6750a4;
+  --dl-purple-dark: #4f3d82;
+  --dl-purple-light: #f3f0ff;
+  --dl-border: #b8aee0;
+  --dl-text: #1c1b1f;
+  --dl-muted: #49454f;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-light: var(--brand-light);
+  --color-navy: var(--navy);
+  --color-navy-dark: var(--navy-dark);
+
+  --color-dl-bg: var(--dl-bg);
+  --color-dl-purple: var(--dl-purple);
+  --color-dl-purple-dark: var(--dl-purple-dark);
+  --color-dl-purple-light: var(--dl-purple-light);
+  --color-dl-border: var(--dl-border);
+  --color-dl-text: var(--dl-text);
+  --color-dl-muted: var(--dl-muted);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.text-size-sm { font-size: 0.9375rem; }
+.text-size-md { font-size: 1rem; }
+.text-size-lg { font-size: 1.125rem; }
+
+/* smooth focus ring, kept subtle and accessible */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}

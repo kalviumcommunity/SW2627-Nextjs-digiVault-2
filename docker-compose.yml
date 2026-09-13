@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: digivault-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: digivault
+      POSTGRES_PASSWORD: digivault
+      POSTGRES_DB: digivault
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - digivault-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  digivault-postgres-data:

@@ -1,0 +1,115 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String      @id @default(cuid())
+  mobileNumber       String      @unique
+  name               String?
+  fullName           String?
+  dateOfBirth        DateTime?
+  email              String?     @unique
+  username           String?     @unique
+  passwordHash       String?
+  avatar             String?
+  language           String      @default("EN")
+  textSizePreference String      @default("A")
+  storageUsed        BigInt      @default(0)
+  storageLimit       BigInt      @default(1073741824) // 1 GB in bytes
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  passwordResetTokens PasswordResetToken[]
+  documents          Document[]
+  folders            Folder[]
+  shareLinks         ShareLink[]
+  downloads          Download[]
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Folder {
+  id             String     @id @default(cuid())
+  userId         String
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  parentFolderId String?
+  parentFolder   Folder?    @relation("FolderToFolder", fields: [parentFolderId], references: [id], onDelete: Cascade)
+  subFolders     Folder[]   @relation("FolderToFolder")
+  documents      Document[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([parentFolderId])
+}
+
+model Document {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  fileName        String
+  fileType        String
+  fileExtension   String
+  fileSize        Int
+  category        String
+  cloudStorageKey String
+  folderId        String?
+  folder          Folder?     @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  uploadedAt      DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  downloadCount   Int         @default(0)
+  shareLinks      ShareLink[]
+  downloads       Download[]
+
+  @@index([userId, uploadedAt(sort: Desc)])
+  @@index([userId, category])
+  @@index([folderId])
+}
+
+model ShareLink {
+  id         String    @id @default(cuid())
+  documentId String
+  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token      String    @unique
+  tokenHash  String?   @unique
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+  isActive   Boolean   @default(true)
+
+  @@index([token])
+  @@index([tokenHash])
+  @@index([documentId])
+  @@index([userId])
+}
+
+model Download {
+  id           String   @id @default(cuid())
+  documentId   String
+  document     Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  downloadedAt DateTime @default(now())
+
+  @@index([documentId])
+  @@index([userId])
+}
